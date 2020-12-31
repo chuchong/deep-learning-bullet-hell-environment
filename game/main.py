@@ -40,6 +40,7 @@ class Main:
 		self.levelInit()
 		self.groupInit()
 		self.menu(self.characterMenu)
+		print("initialization complete")
 		#enter game right away
 		pygame.event.clear()
 		self.initGame(self.playerList[2][1])
@@ -708,4 +709,5 @@ class Main:
 
 if __name__ == "__main__":
 	MainWindow = Main()
-	MainWindow.MainLoop(3)
+	while True:
+		MainWindow.MainLoop(3)
