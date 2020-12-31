@@ -29,7 +29,7 @@ class Main:
 
 		print ("Initializing Pygame...")
 		pygame.init()
-		width,height = 512, 512
+		width,height = 1024,1024
 		self.width = width
 		self.height = height
 		self.screen = pygame.display.set_mode((width
@@ -588,7 +588,7 @@ class Main:
 			self.death = True
 			# self.alive = False
 			# self.hitbox.MoveKeyUp(276-self.prev_key)
-			self.hitbox.health = 0
+			self.hitbox.health = 5
 			# self.lives -= 1
 			# self.hitbox.firing = False
 			# self.delaying_respawn = True
@@ -661,19 +661,19 @@ class Main:
 		# pygame.event.pump()
 
 		# 五种举动
-		if action == 0:
+		if action == 100:
 			self.hitbox.MoveKeyUp(K_SPACE)
 			self.hitbox.MoveKeyUp(K_SPACE)
+		elif action == 0:
+			self.hitbox.MoveKeyUp(K_UP)
+			self.hitbox.MoveKeyUp(K_UP)
 		elif action == 1:
-			self.hitbox.MoveKeyUp(K_UP)
-			self.hitbox.MoveKeyUp(K_UP)
+			self.hitbox.MoveKeyUp(K_DOWN)
+			self.hitbox.MoveKeyUp(K_DOWN)
 		elif action == 2:
-			self.hitbox.MoveKeyUp(K_DOWN)
-			self.hitbox.MoveKeyUp(K_DOWN)
+			self.hitbox.MoveKeyUp(K_LEFT)
+			self.hitbox.MoveKeyUp(K_LEFT)
 		elif action == 3:
-			self.hitbox.MoveKeyUp(K_LEFT)
-			self.hitbox.MoveKeyUp(K_LEFT)
-		elif action == 4:
 			self.hitbox.MoveKeyUp(K_RIGHT)
 			self.hitbox.MoveKeyUp(K_RIGHT)
 		else:
@@ -747,7 +747,7 @@ class Main:
 		game_data.player_point = self.player_group.sprites()[0].rect.center
 		# image_data = pygame.surfarray.array3d(pygame.display.get_surface())
 		# reward = death_reward if self.death else self.reward_given
-		reward = death_reward if self.death else 1
+		reward = death_reward if self.death else 5
 		#if self.death:
 		#	 reward = -10
 		self.score_prev = self.score

@@ -91,8 +91,8 @@ def Sarsa_lambda(env, num_episodes=5000, gamma=0.95, lr=0.1, e=1, decay_rate=0.9
             if done:
                 break
         episode_reward[i] = tmp_episode_reward
-        if i % verbose_iter == 0:
-            print("Total reward until episode", i + 1, ":", tmp_episode_reward)
+        if i % verbose_iter == 10:
+            print("Total reward until last 10 episode", i + 1, ":", np.mean(episode_reward[i-10: i]))
         # sys.stdout.flush()
         if i % 10 == 0:
             e = e * decay_rate

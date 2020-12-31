@@ -6,19 +6,21 @@ from tabular import Tabular
 # Feel free to run your own debug code in main!
 class Env:
     def __init__(self):
-        self.nA = 5 # 四个方向
-        self.nS = 4 # 四个象限
+        self.tabular = Tabular(512, 512)
+        self.nA = 4 # 四个方向
+        self.nS = self.tabular.table_size() # 四个象限
         self.game = Main()
+
 
     def reset(self):
 
-        self.game.MainLoop(0)
+        # self.game.MainLoop(0)
         return 0
 
     def step(self, a):
         # 选择
         reward, game_data, if_dead = self.game.MainLoop(a)
-        return Tabular(512, 512).get_state(game_data), reward,  if_dead, 0
+        return self.tabular.get_state(game_data), reward,  if_dead, 0
 
 
 def main():
