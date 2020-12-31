@@ -37,7 +37,7 @@ def choose_action(state, epsilon, q_table, actions):
     return action
 
 
-def Sarsa_lambda(env, num_episodes=5000, gamma=0.95, lr=0.1, e=1, decay_rate=0.99, l=0.5, verbose_iter=100):
+def Sarsa_lambda(env, num_episodes=5000, gamma=0.95, lr=0.1, e=1, decay_rate=0.99, l=0.5, verbose_iter=20):
     # num_episodes=5000, gamma=0.95, lr=0.1, e=0.8, decay_rate=0.99
     """Learn state-action values using the Sarsa lambda algorithm with epsilon-greedy exploration strategy.
     Update Q at the end of every episode.

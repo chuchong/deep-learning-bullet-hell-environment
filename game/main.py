@@ -588,7 +588,7 @@ class Main:
 			self.death = True
 			# self.alive = False
 			# self.hitbox.MoveKeyUp(276-self.prev_key)
-			# self.hitbox.health = 0
+			self.hitbox.health = 0
 			# self.lives -= 1
 			# self.hitbox.firing = False
 			# self.delaying_respawn = True
@@ -746,7 +746,8 @@ class Main:
 		game_data.bullets = self.monster_bullet_group
 		game_data.player_point = self.player_group.sprites()[0].rect.center
 		# image_data = pygame.surfarray.array3d(pygame.display.get_surface())
-		reward = death_reward if self.death else self.reward_given
+		# reward = death_reward if self.death else self.reward_given
+		reward = death_reward if self.death else 1
 		#if self.death:
 		#	 reward = -10
 		self.score_prev = self.score

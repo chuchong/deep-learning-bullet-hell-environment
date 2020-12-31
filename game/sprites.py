@@ -199,7 +199,7 @@ class Hitbox(Sprite):
         #     self.rect.move_ip(-self.xMove,0)
         #     self.xPub = 0
 
-        if self.rect.x < 0 or self.rect.x >= width:
+        if self.rect.x < 20 or self.rect.x >= width - 30:
             self.rect.move_ip(-self.xMove,0)
             self.xPub = 0
 
@@ -207,7 +207,7 @@ class Hitbox(Sprite):
         #     self.rect.move_ip(0,-self.yMove)
         #     self.yPub = 0
 
-        if self.rect.y <0 or self.rect.y > height:
+        if self.rect.y < 20 or self.rect.y >= height - 30:
             self.rect.move_ip(0,-self.yMove)
             self.yPub = 0
 
@@ -220,8 +220,8 @@ class Hitbox(Sprite):
         for b in pygame.sprite.spritecollide(self, bullets, False):
             self.health = self.health - b.dam
             b.kill()
-        if self.health < 1:
-            self.kill()
+        # if self.health < 1:
+        #     self.kill()
 
         if self.stamina < self.stamina_max:
             self.stamina += self.stamina_gain

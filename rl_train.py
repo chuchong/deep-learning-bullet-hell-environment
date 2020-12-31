@@ -12,12 +12,12 @@ class Env:
 
     def reset(self):
 
-        self.game.MainLoop(100, True)#这里100是让他发射子弹
+        self.game.MainLoop(0)
         return 0
 
     def step(self, a):
         # 选择
-        reward, game_data, if_dead = self.game.MainLoop(a, True)
+        reward, game_data, if_dead = self.game.MainLoop(a)
         return Tabular(512, 512).get_state(game_data), reward,  if_dead, 0
 
 
