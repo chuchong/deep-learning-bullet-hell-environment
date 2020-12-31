@@ -1,3 +1,42 @@
+import numpy as np
+
+class EligibilityTraces:
+    def __init__(self, lamb, nS, nA):
+        self.lamb = lamb
+        self.values = np.zeros((nS, nA))
+
+    def update(self, state, action, update_fn):
+        old_value = self.get(state, action)
+        new_value = update_fn(old_value)
+        self.set(state, action, new_value)
+
+    def set(self, state, action, new_value):
+        self.values[state][action] = new_value
+
+    def decay(self, state, action):
+        self.update(state, action, lambda v: v * self.decay_rate)
+
+    def decay_all(self, gamma):
+        self.values = self.lamb * gamma * self.values
+
+    def increment(self, state, action):
+        self.update(state, action, lambda v: v + 1)
+
+    def get(self, state, action):
+        return self.values[state][action]
+
+
+def choose_action(state, epsilon, q_table, actions):
+    # Selection of the action - 90 % according to the epsilon == 0.1
+    # Choosing the best action
+    if np.random.uniform() > epsilon:
+        action = np.argmax(q_table[state])
+    else:
+        # Choosing random action - left 10 % for choosing randomly
+        action = np.random.choice(actions)
+    return action
+
+
 def Sarsa_lambda(env, num_episodes=5000, gamma=0.95, lr=0.1, e=1, decay_rate=0.99, l=0.5, verbose_iter=100):
     # num_episodes=5000, gamma=0.95, lr=0.1, e=0.8, decay_rate=0.99
     """Learn state-action values using the Sarsa lambda algorithm with epsilon-greedy exploration strategy.
