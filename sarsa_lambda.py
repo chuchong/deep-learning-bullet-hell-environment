@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 class EligibilityTraces:
     def __init__(self, lamb, nS, nA):
         self.lamb = lamb
@@ -51,7 +51,7 @@ class Sarsa():
     def save_q(self, file_name):
         np.savetxt(file_name, self.Q, delimiter=',')
 
-    def Sarsa_lambda(self, env, num_episodes=5000, gamma=0.99, lr=0.1, e=0.9, decay_rate=0.99, l=0.8, verbose_iter=20):
+    def Sarsa_lambda(self, env, num_episodes=5000, gamma=0.99, lr=0.2, e=0.1, decay_rate=0.95, l=0.2, verbose_iter=20):
         # num_episodes=5000, gamma=0.95, lr=0.1, e=0.8, decay_rate=0.99
         ############################
         # YOUR IMPLEMENTATION HERE #
@@ -62,10 +62,10 @@ class Sarsa():
         for i in range(num_episodes):
             tmp_episode_reward = 0
             s = env.reset()
-            a = self.choose_action(s, e, self.Q, env.nA)
+            a = self.choose_action(s, e, self.Q,  range(env.nA))
             while (True):
                 nexts, reward, done, info = env.step(a)
-                nexta = self.choose_action(nexts, e, self.Q, env.nA)
+                nexta = self.choose_action(nexts, e, self.Q, range(env.nA))
                 delta = reward + gamma * self.Q[nexts][nexta] - self.Q[s][a]
                 E.increment(s, a)
 
@@ -78,11 +78,15 @@ class Sarsa():
                 if done:
                     break
             episode_reward[i] = tmp_episode_reward
+
             if (i + 1) % verbose_iter == 0:
                 print("Total reward until last 8 episode", (i + 1), ":", np.mean(episode_reward[i-8: i]))
             # sys.stdout.flush()
-            if (i + 1) % 100 == 0:
-                e = e * decay_rate
-        return self.Q, episode_reward
+            if (i + 1) % 30 == 0:
+                if np.mean(episode_reward[i-8: i]) < 0:
+                    e = min(e / decay_rate, 1)
+                else:
+                    e = e * decay_rate
+        return self.Q, episode_reward, e
 
 

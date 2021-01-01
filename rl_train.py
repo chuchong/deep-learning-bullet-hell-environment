@@ -8,8 +8,8 @@ import csv
 # Feel free to run your own debug code in main!
 class Env:
     def __init__(self):
-        self.tabular = Tabular(512, 512)
-        self.nA = 4 # 四个方向
+        self.tabular = Tabular(1024, 1024)
+        self.nA = 4 # 四个方向 0123 上下左右
         self.nS = self.tabular.table_size() # 四个象限
         self.game = Main()
 
@@ -27,12 +27,22 @@ class Env:
 
 def main():
     num_episodes = 10000
-    save_episodes = 50 # 每多少代保存一次Q
+    save_episodes = 100 # 每多少代保存一次Q
     savefile = "sarsa_q.csv"
+
+
 
     times = num_episodes // save_episodes
     env = Env()
+
+    # 先空学习一段时间
+    sarsa = Sarsa()
+    sarsa.init_q(env)
+    Q, S_rewards, _ = sarsa.Sarsa_lambda(env, 100, verbose_iter=1000000)
+
     # q_learningnum_episodes = 10000
+    reward_list = []
+    e= 0.1
     for i in range(times):
         sarsa = Sarsa()
         try:
@@ -40,7 +50,8 @@ def main():
             sarsa.load_q(savefile)
         except Exception:
             sarsa.init_q(env)
-        Q, S_rewards = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10)
+        Q, S_rewards, e = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10, e=e)
+        reward_list.extend(S_rewards)
         try:
             sarsa.save_q(savefile)
         except Exception:
@@ -51,7 +62,7 @@ def main():
     #
     # evaluate_Q(env, Q3, 200) 之后需要实现
 
-    plt.plot(range(num_episodes), S_rewards)
+    plt.plot(range(num_episodes), reward_list)
     plt.show()
 
 

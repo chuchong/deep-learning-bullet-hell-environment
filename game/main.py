@@ -668,20 +668,20 @@ class Main:
 
 		# 五种举动
 		if action == 100:
-			self.hitbox.MoveKeyUp(K_SPACE)
-			self.hitbox.MoveKeyUp(K_SPACE)
+			self.hitbox.MoveKeyDown(K_SPACE)
+			# self.hitbox.MoveKeyUp(K_SPACE)
 		elif action == 0:
-			self.hitbox.MoveKeyUp(K_UP)
-			self.hitbox.MoveKeyUp(K_UP)
+			self.hitbox.MoveKeyDown(K_UP)
+			#self.hitbox.MoveKeyUp(K_UP)
 		elif action == 1:
-			self.hitbox.MoveKeyUp(K_DOWN)
-			self.hitbox.MoveKeyUp(K_DOWN)
+			self.hitbox.MoveKeyDown(K_DOWN)
+			#self.hitbox.MoveKeyUp(K_DOWN)
 		elif action == 2:
-			self.hitbox.MoveKeyUp(K_LEFT)
-			self.hitbox.MoveKeyUp(K_LEFT)
+			self.hitbox.MoveKeyDown(K_LEFT)
+			#self.hitbox.MoveKeyUp(K_LEFT)
 		elif action == 3:
-			self.hitbox.MoveKeyUp(K_RIGHT)
-			self.hitbox.MoveKeyUp(K_RIGHT)
+			self.hitbox.MoveKeyDown(K_RIGHT)
+			#self.hitbox.MoveKeyUp(K_RIGHT)
 		else:
 			pass
 
@@ -753,7 +753,7 @@ class Main:
 		game_data.player_point = self.player_group.sprites()[0].rect.center
 		# image_data = pygame.surfarray.array3d(pygame.display.get_surface())
 		# reward = death_reward if self.death else self.reward_given
-		reward = death_reward if self.death else 5
+		reward = death_reward if self.death else 0.5*(1 - abs(self.hitbox.rect[0] - self.width / 2) / (self.width / 2) ) + 0.5*(1 - abs(self.hitbox.rect[1] - self.height / 2) / (self.height / 2) )
 		#if self.death:
 		#	 reward = -10
 		self.score_prev = self.score
