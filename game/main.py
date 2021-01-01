@@ -753,7 +753,8 @@ class Main:
 		game_data.player_point = self.player_group.sprites()[0].rect.center
 		# image_data = pygame.surfarray.array3d(pygame.display.get_surface())
 		# reward = death_reward if self.death else self.reward_given
-		reward = death_reward if self.death else 0.5*(1 - abs(self.hitbox.rect[0] - self.width / 2) / (self.width / 2) ) + 0.5*(1 - abs(self.hitbox.rect[1] - self.height / 2) / (self.height / 2) )
+		reward = death_reward if self.death else 0.2
+		# reward = death_reward if self.death else 0.5*(1 - abs(self.hitbox.rect[0] - self.width / 2) / (self.width / 2) ) + 0.5*(1 - abs(self.hitbox.rect[1] - self.height / 2) / (self.height / 2) )
 		#if self.death:
 		#	 reward = -10
 		self.score_prev = self.score

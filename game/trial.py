@@ -1,5 +1,5 @@
-from game.main import Main
-game = Main()
+# from game.main import Main
+# game = Main()
 # start_game = game.MainLoop(3)
 #
 #
@@ -11,7 +11,14 @@ region_bullets = np.zeros([4])
 print(region_bullets)
 
 
-actions = range(4)
-for i in range(100):
-    action = np.random.choice(actions)
-    print(action)
+# actions = range(4)
+# for i in range(100):
+#     action = np.random.choice(actions)
+#     print(action)
+
+import sklearn.linear_model as lm
+r = lm.LinearRegression()
+r.fit(np.array([[1, 1], [2,2]]), np.array([[1], [2]]))
+y = r.predict(np.ones([1, 2]))
+
+print(y, r.coef_)

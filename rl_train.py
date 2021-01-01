@@ -21,7 +21,7 @@ class Env:
 
     def step(self, a):
         # 选择
-        reward, game_data, if_dead = self.game.MainLoop(a)
+        reward, game_data, if_dead = self.game.MainLoop(a, True)
         return self.tabular.get_state(game_data), reward,  if_dead, 0
 
 
@@ -38,7 +38,7 @@ def main():
     # 先空学习一段时间
     sarsa = Sarsa()
     sarsa.init_q(env)
-    Q, S_rewards, _ = sarsa.Sarsa_lambda(env, 100, verbose_iter=1000000)
+    Q, S_rewards, _ = sarsa.Sarsa_lambda(env, 10, verbose_iter=1000000)
 
     # q_learningnum_episodes = 10000
     reward_list = []
@@ -50,7 +50,7 @@ def main():
             sarsa.load_q(savefile)
         except Exception:
             sarsa.init_q(env)
-        Q, S_rewards, e = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10, e=e)
+        Q, S_rewards, e = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10, e=e, train=False)
         reward_list.extend(S_rewards)
         try:
             sarsa.save_q(savefile)
