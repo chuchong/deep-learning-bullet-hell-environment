@@ -1,8 +1,10 @@
 import gym
 import matplotlib.pyplot as plt
 from game.main import Main
-from sarsa_lambda import Sarsa_lambda
+from sarsa_lambda import Sarsa
 from tabular import Tabular
+import os
+import csv
 # Feel free to run your own debug code in main!
 class Env:
     def __init__(self):
@@ -25,11 +27,28 @@ class Env:
 
 def main():
     num_episodes = 10000
+    save_episodes = 50 # 每多少代保存一次Q
+    savefile = "sarsa_q.csv"
 
+    times = num_episodes // save_episodes
     env = Env()
     # q_learningnum_episodes = 10000
-    Q, S_rewards = Sarsa_lambda(env, num_episodes)
+    for i in range(times):
+        sarsa = Sarsa()
+        try:
+            f = open(savefile)
+            sarsa.load_q(savefile)
+        except Exception:
+            sarsa.init_q(env)
+        Q, S_rewards = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10)
+        try:
+            sarsa.save_q(savefile)
+        except Exception:
+            print("save to file meets error", Exception)
+        print("train ", save_episodes * (i + 1),  "times, save to file ", savefile)
 
+    # save Q
+    #
     # evaluate_Q(env, Q3, 200) 之后需要实现
 
     plt.plot(range(num_episodes), S_rewards)
