@@ -461,7 +461,7 @@ class Main:
 
 		# 朝着角色发射
 		toplayer_dgree = atan2(self.hitbox.rect[1] - monst.rect[1], self.hitbox.rect[0] - monst.rect[0])
-		degree = toplayer_dgree * 180 / pi
+		degree = toplayer_dgree * 180 / pi + random.randint(-5, 5)
 
 		# degree = monst.firing_degree_passed
 		img = load_image_trans(img,-1)
