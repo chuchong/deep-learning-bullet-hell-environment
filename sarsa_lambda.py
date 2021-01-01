@@ -51,7 +51,7 @@ class Sarsa():
     def save_q(self, file_name):
         np.savetxt(file_name, self.Q, delimiter=',')
 
-    def Sarsa_lambda(self, env, num_episodes=5000, gamma=0.99, lr=0.1, e=0.8, decay_rate=0.99, l=0.8, verbose_iter=20):
+    def Sarsa_lambda(self, env, num_episodes=5000, gamma=0.99, lr=0.1, e=0.9, decay_rate=0.99, l=0.8, verbose_iter=20):
         # num_episodes=5000, gamma=0.95, lr=0.1, e=0.8, decay_rate=0.99
         ############################
         # YOUR IMPLEMENTATION HERE #
@@ -79,9 +79,9 @@ class Sarsa():
                     break
             episode_reward[i] = tmp_episode_reward
             if (i + 1) % verbose_iter == 0:
-                print("Total reward until last 10 episode", (i + 1), ":", np.mean(episode_reward[i-10: i]))
+                print("Total reward until last 8 episode", (i + 1), ":", np.mean(episode_reward[i-8: i]))
             # sys.stdout.flush()
-            if (i + 1) % 10 == 0:
+            if (i + 1) % 100 == 0:
                 e = e * decay_rate
         return self.Q, episode_reward
 

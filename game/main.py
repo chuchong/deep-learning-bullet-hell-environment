@@ -425,31 +425,31 @@ class Main:
 			passedDegrees += interval
 			rotation -= interval
 
-	def monsterPatternFire(self, monst):
-
-		monst.firing = False
-		dam,img,degreeNum,speed,angleFactor,speedFactor,interval,switchBackPoints = monst.fire_data
-		img = load_image_trans(img,-1)
-		x,y,width,height = monst.rect
-		x += (width / 2)
-		y += (height / 2)
-		ctrpt = x,y
-		degrees = 0
-		oldDegrees = 0
-		passedDegrees = switchBackPoints[0]
-		rotation = -90 + switchBackPoints[0]
-		while degrees < degreeNum:
-			if (degrees - oldDegrees) >= switchBackPoints[1]:
-				passedDegrees = switchBackPoints[0]
-				rotation = -90 + switchBackPoints[0]
-				speed += 2
-				oldDegrees = degrees
-			data = [dam,speed,angleFactor,speedFactor,False]
-			bullet = sprites.Bullet(ctrpt,img,passedDegrees,data)
-			self.monster_bullet_group.add(bullet)
-			degrees += interval
-			passedDegrees += interval
-			rotation -= interval
+	# def monsterPatternFire(self, monst):
+	#
+	# 	monst.firing = False
+	# 	dam,img,degreeNum,speed,angleFactor,speedFactor,interval,switchBackPoints = monst.fire_data
+	# 	img = load_image_trans(img,-1)
+	# 	x,y,width,height = monst.rect
+	# 	x += (width / 2)
+	# 	y += (height / 2)
+	# 	ctrpt = x,y
+	# 	degrees = 0
+	# 	oldDegrees = 0
+	# 	passedDegrees = switchBackPoints[0]
+	# 	rotation = -90 + switchBackPoints[0]
+	# 	while degrees < degreeNum:
+	# 		if (degrees - oldDegrees) >= switchBackPoints[1]:
+	# 			passedDegrees = switchBackPoints[0]
+	# 			rotation = -90 + switchBackPoints[0]
+	# 			speed += 2
+	# 			oldDegrees = degrees
+	# 		data = [dam,speed,angleFactor,speedFactor,False]
+	# 		bullet = sprites.Bullet(ctrpt,img,passedDegrees,data)
+	# 		self.monster_bullet_group.add(bullet)
+	# 		degrees += interval
+	# 		passedDegrees += interval
+	# 		rotation -= interval
 
 	def monsterFire(self, monst):
 
@@ -458,7 +458,12 @@ class Main:
 			angleFactor = (random.randint(angleFactor[0],angleFactor[1]) / 10)
 		else:
 			angleFactor = angleFactor[0]
-		degree = monst.firing_degree_passed
+
+		# 朝着角色发射
+		toplayer_dgree = atan2(self.hitbox.rect[1] - monst.rect[1], self.hitbox.rect[0] - monst.rect[0])
+		degree = toplayer_dgree * 180 / pi
+
+		# degree = monst.firing_degree_passed
 		img = load_image_trans(img,-1)
 		rotation = (degree * -1)
 		img = pygame.transform.rotate(img, rotation)
@@ -508,7 +513,8 @@ class Main:
 	def inGameUpdate(self):
 		self.reward_given = reward_in_env
 		self.rounds_passed += 1
-		self.spawnMonster()
+		if len(self.monster_group.sprites()) < 10:
+			self.spawnMonster()
 
 		if self.respawn_counter >= self.respawn_now and self.lives > 0 and self.delaying_respawn == True:
 			#Still have the issue of drifting on respawn, causing the player to have high movespeed and

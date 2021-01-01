@@ -7,7 +7,7 @@ class Tabular:
         self.h = window_rect_h
 
     def table_size(self):
-        return 16
+        return 48
 
     def get_state(self, game_data: GameData):
         region_bullets = np.zeros([4])
@@ -38,4 +38,13 @@ class Tabular:
         s3 = (self.w - center[0])* (self.h - center[1])
         region_dens = region_bullets / np.array([s0, s1, s2, s3])
 
-        return  4 * np.argmax(region_dens) + min_dist_id
+        # 子弹归一化距离
+        ratio = min_dist / (self.w + self.h)
+        relative_dist_type = 0
+        if ratio > 0.1:
+            relative_dist_type = 0
+        elif ratio > 0.01:
+            relative_dist_type = 1
+        else:
+            relative_dist_type = 2
+        return  16 * relative_dist_type  + 4 * np.argmax(region_dens) + min_dist_id

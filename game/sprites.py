@@ -199,7 +199,7 @@ class Hitbox(Sprite):
         #     self.rect.move_ip(-self.xMove,0)
         #     self.xPub = 0
 
-        if self.rect.x < 20 or self.rect.x >= width - 30:
+        if self.rect.x < 20 or self.rect.x >= width - 400:
             self.rect.move_ip(-self.xMove,0)
             self.xPub = 0
 
@@ -207,7 +207,7 @@ class Hitbox(Sprite):
         #     self.rect.move_ip(0,-self.yMove)
         #     self.yPub = 0
 
-        if self.rect.y < 20 or self.rect.y >= height - 30:
+        if self.rect.y < 400 or self.rect.y >= height - 30:
             self.rect.move_ip(0,-self.yMove)
             self.yPub = 0
 
