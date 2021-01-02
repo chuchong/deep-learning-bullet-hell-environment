@@ -460,7 +460,7 @@ class Main:
 			angleFactor = angleFactor[0]
 
 		# 朝着角色发射
-		if random.randint(1, 100) < 0:
+		if random.randint(1, 100) < 50:
 			toplayer_dgree = atan2(self.hitbox.rect[1] - monst.rect[1], self.hitbox.rect[0] - monst.rect[0])
 			degree = toplayer_dgree * 180 / pi + random.randint(-5, 5)
 		else:
