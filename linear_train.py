@@ -60,7 +60,7 @@ while True:
     #choose an action epsilon greedy, or the action that will return the highest reward using our network
     #i chose to create an arbitrary policy before it starts learning to try and explore as much as it can
     if t < observe:
-        action_index = 1 if random.random() < 0.5 else 0
+        action_index = 2 if random.random() < 0.5 else 3
     else:
         if random.random() <= epsilon:
             action_index = random.randint(0, num_of_actions-1)      #choose a random action
