@@ -21,7 +21,7 @@ class Env:
 
     def step(self, a):
         # 选择
-        reward, game_data, if_dead = self.game.MainLoop(a, True)
+        reward, game_data, if_dead = self.game.MainLoop(a)
         return self.tabular.get_state(game_data), reward,  if_dead, 0
 
 

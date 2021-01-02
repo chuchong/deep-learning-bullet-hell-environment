@@ -460,10 +460,11 @@ class Main:
 			angleFactor = angleFactor[0]
 
 		# 朝着角色发射
-		toplayer_dgree = atan2(self.hitbox.rect[1] - monst.rect[1], self.hitbox.rect[0] - monst.rect[0])
-		degree = toplayer_dgree * 180 / pi + random.randint(-5, 5)
-
-		# degree = monst.firing_degree_passed
+		if random.randint(1, 100) < 50:
+			toplayer_dgree = atan2(self.hitbox.rect[1] - monst.rect[1], self.hitbox.rect[0] - monst.rect[0])
+			degree = toplayer_dgree * 180 / pi + random.randint(-5, 5)
+		else:
+			degree = monst.firing_degree_passed
 		img = load_image_trans(img,-1)
 		rotation = (degree * -1)
 		img = pygame.transform.rotate(img, rotation)
@@ -753,7 +754,7 @@ class Main:
 		game_data.player_point = self.player_group.sprites()[0].rect.center
 		# image_data = pygame.surfarray.array3d(pygame.display.get_surface())
 		# reward = death_reward if self.death else self.reward_given
-		reward = death_reward if self.death else 0.2
+		reward = death_reward if self.death else reward_in_env * (self.hitbox.rect[1] / self.height)
 		# reward = death_reward if self.death else 0.5*(1 - abs(self.hitbox.rect[0] - self.width / 2) / (self.width / 2) ) + 0.5*(1 - abs(self.hitbox.rect[1] - self.height / 2) / (self.height / 2) )
 		#if self.death:
 		#	 reward = -10

@@ -20,7 +20,7 @@ start_game = game.MainLoop(3)
 
 from config import vectorize_d, num_of_actions, game_pixel
 from sklearn import linear_model, neural_network
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error
 #Obtain the starting state
 r_0, s_t, s_f = game.MainLoop(3)
 #Failsafe press of x - sometimes startup lags affects ability to enter the game successfully
@@ -36,7 +36,10 @@ models = [linear_model.SGDRegressor(), linear_model.SGDRegressor(), linear_model
 
 for i in range(4):
     models[i].fit(np.zeros([2, vectorize.vector_size()]), np.zeros([2]))
-    models[i].coef_ = np.loadtxt("linear{}.csv".format(i), delimiter=',')
+    try:
+        models[i].coef_ = np.loadtxt("linear{}.csv".format(i), delimiter=',')
+    except Exception:
+        pass
 s_t = vectorize.get_vector(s_t).reshape(1,-1)
 
 t=0
@@ -63,9 +66,9 @@ while True:
             action_index = random.randint(0, num_of_actions-1)      #choose a random action
             explored = True
         else:
-            q = np.array(models[i].predict(s_t) for i in range(4))          #input a stack of 4 images, get the prediction
+            q = np.hstack([models[i].predict(s_t) for i in range(4)])         #input a stack of 4 images, get the prediction
             action_index = np.argmax(q)
-    #pyautogui.keyDown(action_array[action_index])
+    #pyautogui.keyDown(action_array[action_index])m
     #keyboard.press(action_array[action_index])
 
     #execute the action and observe the reward and the state transitioned to as a result of our action
@@ -122,9 +125,9 @@ while True:
 
         #train the network with the new values calculated with Q-learning and get loss of our network for evaluation
         for i in range(4):
-            models[i].fit(inputs, targets[:,i])
+            models[i].partial_fit(inputs, targets[:,i])
             Y = models[i].predict(inputs)
-            loss += r2_score(targets[:,i], Y)
+            loss += mean_squared_error(targets[:,i], Y)
 
     '''
     Our current state = transitioned states

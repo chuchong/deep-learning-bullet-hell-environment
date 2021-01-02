@@ -22,3 +22,8 @@ r.fit(np.array([[1, 1], [2,2]]), np.array([[1], [2]]))
 y = r.predict(np.ones([1, 2]))
 
 print(y, r.coef_)
+
+def f():
+    return 1
+q = np.array([f() for i in range(4)])
+print(q)
