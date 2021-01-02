@@ -43,7 +43,10 @@ for i in range(4):
 s_t = vectorize.get_vector(s_t).reshape(1,-1)
 
 t=0
-
+num_episodes = 5000
+episode_reward = np.zeros((num_episodes,))
+tmp_episode_reward = 0
+epi = 0
 while True:
 
     #pyautogui.keyDown('x')
@@ -59,6 +62,7 @@ while True:
 
     #choose an action epsilon greedy, or the action that will return the highest reward using our network
     #i chose to create an arbitrary policy before it starts learning to try and explore as much as it can
+
     if t < observe:
         action_index = 2 if random.random() < 0.5 else 3
     else:
@@ -89,6 +93,18 @@ while True:
 
     if len(D) > exp_replay_memory:
         D.popleft()
+
+    if t > observe:
+        if not terminal:
+            tmp_episode_reward += r_t
+        else:
+            tmp_episode_reward += r_t
+            episode_reward[epi] = tmp_episode_reward
+            print("episode", epi, "reward:", tmp_episode_reward)
+            epi += 1
+            if epi >= num_episodes:
+                break
+            tmp_episode_reward = 0
 
     '''
     We need enough states in our experience replay deque so that we can take a random sample from it of the size we declared.
@@ -142,4 +158,7 @@ while True:
 
         # model.save_weights('weights.hdf5', overwrite=True)
 
-    print("Timestep: %d, Action: %d, Reward: %.2f, Q: %.2f, Loss: %.2f, Explored: %s" % (t, action_index, r_t, np.max(Q_sa), loss, explored))
+    # print("Timestep: %d, Action: %d, Reward: %.2f, Q: %.2f, Loss: %.2f, Explored: %s" % (t, action_index, r_t, np.max(Q_sa), loss, explored))
+import matplotlib.pyplot as plt
+plt.plot(range(num_episodes), episode_reward)
+plt.show()
