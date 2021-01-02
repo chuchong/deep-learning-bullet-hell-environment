@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from game.main import Main
 from sarsa_lambda import Sarsa
 from tabular import Tabular
+import numpy as np
 import os
 import csv
 # Feel free to run your own debug code in main!
@@ -50,7 +51,7 @@ def main():
             sarsa.load_q(savefile)
         except Exception:
             sarsa.init_q(env)
-        Q, S_rewards, e = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10, e=e, train=False)
+        Q, S_rewards, e = sarsa.Sarsa_lambda(env, save_episodes, verbose_iter=10, e=e, train=True)
         reward_list.extend(S_rewards)
         try:
             sarsa.save_q(savefile)
@@ -61,9 +62,11 @@ def main():
     # save Q
     #
     # evaluate_Q(env, Q3, 200) 之后需要实现
-
+    plt.title('tabular')
     plt.plot(range(num_episodes), reward_list)
     plt.show()
+
+    print("last 1000 times reward: ", np.mean(reward_list[-1000:]))
 
 
 if __name__ == '__main__':

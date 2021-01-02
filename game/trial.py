@@ -27,3 +27,11 @@ def f():
     return 1
 q = np.array([f() for i in range(4)])
 print(q)
+
+num_episodes = 2
+episode_reward = np.array([1, 2 ])
+import matplotlib.pyplot as plt
+plt.title('linear')
+plt.plot(range(num_episodes), episode_reward)
+plt.show()
+print("mn", np.mean(episode_reward))

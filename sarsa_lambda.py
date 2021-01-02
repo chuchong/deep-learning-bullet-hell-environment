@@ -83,13 +83,13 @@ class Sarsa():
             if (i + 1) % verbose_iter == 0:
                 print("Total reward until last 8 episode", (i + 1), ":", np.mean(episode_reward[i-8: i]))
             # sys.stdout.flush()
-            # if (i + 1) % 30 == 0:
-            #     e = e * decay_rate
             if (i + 1) % 30 == 0:
-                if np.mean(episode_reward[i-8: i]) < 0:
-                    e = min(e / decay_rate, 0.5)
-                else:
-                    e = e * decay_rate
+                e = e * decay_rate
+            # if (i + 1) % 30 == 0:
+            #     if np.mean(episode_reward[i-8: i]) < 0:
+            #         e = min(e / decay_rate, 0.5)
+            #     else:
+            #         e = e * decay_rate
         return self.Q, episode_reward, e
 
 

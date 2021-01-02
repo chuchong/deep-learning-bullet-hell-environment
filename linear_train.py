@@ -43,7 +43,7 @@ for i in range(4):
 s_t = vectorize.get_vector(s_t).reshape(1,-1)
 
 t=0
-num_episodes = 5000
+num_episodes = 10000
 episode_reward = np.zeros((num_episodes,))
 tmp_episode_reward = 0
 epi = 0
@@ -160,5 +160,8 @@ while True:
 
     # print("Timestep: %d, Action: %d, Reward: %.2f, Q: %.2f, Loss: %.2f, Explored: %s" % (t, action_index, r_t, np.max(Q_sa), loss, explored))
 import matplotlib.pyplot as plt
+plt.title('linear')
 plt.plot(range(num_episodes), episode_reward)
 plt.show()
+
+print("last 1000 times reward: " , np.mean(episode_reward[-1000:]))
