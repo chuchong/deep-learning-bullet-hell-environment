@@ -1,0 +1,7 @@
+
+*.pyc
+.idea
+.idea/vcs.xml
+*.csv
+*.png
+*.png

@@ -1,12 +1,12 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__))+"/game")
-from main import Main
-from keras.models import Sequential
-from keras.layers.core import Dense, Flatten
-from keras.layers import Conv2D, MaxPooling2D
+from game.main import Main
+# from keras.models import Sequential
+# from keras.layers.core import Dense, Flatten
+# from keras.layers import Conv2D, MaxPooling2D
 import numpy as np
 from collections import deque
-from skimage import color, transform, exposure
+# from skimage import color, transform, exposure
 import random
 #from keras.utils import plot_model
 
@@ -17,19 +17,6 @@ from config import num_of_cols, num_of_rows, num_of_hidden_layer_neurons, img_ch
 	timesteps_to_save_weights, exp_replay_memory
 
 
-#Convolves 32 filters size 8x8 with stride = 4
-model = Sequential()
-model.add(Conv2D(32, kernel_size=(8,8), strides=(4, 4), activation='relu',input_shape=(num_of_cols,num_of_rows,img_channels)))
-model.add(MaxPooling2D(pool_size=(4,4), strides=(2, 2), padding='same'))
-model.add(Conv2D(64, kernel_size=(4,4), strides=(2, 2), activation='relu'))
-model.add(Conv2D(128, kernel_size=(2,2), strides=(2, 2), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2,2), strides=(1, 1), padding='same'))
-model.add(Flatten())
-model.add(Dense(num_of_hidden_layer_neurons, activation='relu'))
-model.add(Dense(num_of_actions))
-model.compile(loss='mse',optimizer='adam')
-#plot_model(model, to_file='model.png')
-model.load_weights("weights.hdf5")
 #Start game and press 'x' so we enter the game.
 start_game = game.MainLoop(3)
 
@@ -39,9 +26,9 @@ r_0, s_t, s_f = game.MainLoop(3)
 #Failsafe press of x - sometimes startup lags affects ability to enter the game successfully
 #pyautogui.press('x')
 #Turn our screenshot to gray scale, resize to num_of_cols*num_of_rows, and make pixels in 0-255 range
-s_t = color.rgb2gray(s_t)
-s_t = transform.resize(s_t,(num_of_cols,num_of_rows))
-s_t = exposure.rescale_intensity(s_t,out_range=(0,255))
+# s_t = color.rgb2gray(s_t)
+# s_t = transform.resize(s_t,(num_of_cols,num_of_rows))
+# s_t = exposure.rescale_intensity(s_t,out_range=(0,255))
 s_t = np.stack((s_t, s_t, s_t, s_t), axis=2)
 #In Keras, need to reshape
 s_t = s_t.reshape(1, s_t.shape[0], s_t.shape[1], s_t.shape[2])	#1*num_of_cols*num_of_rows*4

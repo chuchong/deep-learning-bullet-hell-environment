@@ -5,6 +5,15 @@ from pygame.locals import *
 
 class BasicAI(pygame.sprite.Sprite):
     def __init__(self, centerPoint, image, data):
+        '''
+        self.monsterKinds = [
+            ["tanuki.png",[3,100,.01,90,0,5,5],[True,12,15,3,[12,"monsterbulletred.png",3,[0,0],1.006,30,60,-1,0,0,0],7,[12,"tanukiexplode.png",5,[-25,25],.97,40,30]],250,False],
+            ["kitsune.png",[3,50,.02,270,7,5,7],[True,15,10,5,[10,"monsterbullet.png",3,[0,0],1.01,30,30,-1,0,0,0],5,[10,"monsterbulletblue.png",5,[0,0],1.01,40,0]],300,False],
+            ["tengu.png",[4,100,.01,360,0,6,12],[False,10,20,5,[20,"tengubullet.png",3,[0,0],1.006,30,30,-1,0,0,0],18,[0,"hitbox.png",0,[0,0],0,0,0]],1500,True]]
+        :param centerPoint:
+        :param image:
+        :param data:
+        '''
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = image.get_rect()

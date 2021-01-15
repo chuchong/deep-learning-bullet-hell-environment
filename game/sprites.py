@@ -189,16 +189,25 @@ class Hitbox(Sprite):
         self.stamina_out = False
         self.moveable = False
 
-    def update(self, vert_walls, hori_walls, bullets):
+    def update(self, width, height, bullets):
 
         if self.moveable == True:
             self.xPub,self.yPub = self.xMove,self.yMove
             self.rect.move_ip(self.xMove,self.yMove)
 
-        if pygame.sprite.spritecollideany(self, vert_walls):
+        # if pygame.sprite.spritecollideany(self, vert_walls):
+        #     self.rect.move_ip(-self.xMove,0)
+        #     self.xPub = 0
+
+        if self.rect.x < 20 or self.rect.x >= width - 20:
             self.rect.move_ip(-self.xMove,0)
             self.xPub = 0
-        if pygame.sprite.spritecollideany(self, hori_walls):
+
+        # if pygame.sprite.spritecollideany(self, hori_walls):
+        #     self.rect.move_ip(0,-self.yMove)
+        #     self.yPub = 0
+
+        if self.rect.y < 20 or self.rect.y >= height - 30:
             self.rect.move_ip(0,-self.yMove)
             self.yPub = 0
 
@@ -211,8 +220,8 @@ class Hitbox(Sprite):
         for b in pygame.sprite.spritecollide(self, bullets, False):
             self.health = self.health - b.dam
             b.kill()
-        if self.health < 1:
-            self.kill()
+        # if self.health < 1:
+        #     self.kill()
 
         if self.stamina < self.stamina_max:
             self.stamina += self.stamina_gain
@@ -226,17 +235,19 @@ class Hitbox(Sprite):
 
     def MoveKeyDown(self, key):
         if (key == K_RIGHT):
-            self.xMove += self.x_dist
+            self.xMove = self.x_dist
             self.facing = 3
         elif (key == K_LEFT):
-            self.xMove += -self.x_dist
+            self.xMove = -self.x_dist
             self.facing = 1
         elif (key == K_UP):
-            self.yMove += -self.y_dist
+            self.yMove = -self.y_dist
             self.facing = 2
         elif (key == K_DOWN):
-            self.yMove += self.y_dist
+            self.yMove = self.y_dist
             self.facing = 2
+        else:
+            pass
 
     def MoveKeyUp(self, key): # FIX ME! As is, this can cause player drift on respawn, but if those boolean checks are uncommented, it causes stick when changing from right<->left or up<->down
 

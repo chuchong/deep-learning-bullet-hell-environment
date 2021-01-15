@@ -14,7 +14,7 @@ import levels
 sys.path.append("../")
 from config import reward_on_hit, reward_in_env, death_reward
 
-
+from game_data import GameData
 class Main:
 
 
@@ -29,7 +29,9 @@ class Main:
 
 		print ("Initializing Pygame...")
 		pygame.init()
-		width,height = 512, 512
+		width,height = 1024,1024
+		self.width = width
+		self.height = height
 		self.screen = pygame.display.set_mode((width
 											   , height))
 		self.screen.fill((0,0,0))
@@ -40,6 +42,7 @@ class Main:
 		self.levelInit()
 		self.groupInit()
 		self.menu(self.characterMenu)
+		print("initialization complete")
 		#enter game right away
 		pygame.event.clear()
 		self.initGame(self.playerList[2][1])
@@ -99,7 +102,7 @@ class Main:
 
 		self.xMove = 0
 		self.yMove = 0
-		self.lives = 99999999
+		self.lives = 1
 		self.death = False
 		self.score = 0
 		self.score_prev = 0
@@ -208,7 +211,7 @@ class Main:
 		self.current_level = self.levels[self.level]
 		self.bg_img = self.current_level.bgImg
 		img = load_image_trans("wall.png",-1)
-		ctrpt = 1,500
+		ctrpt = 1,500 # 这有问题
 		self.wall_b = sprites.Object(ctrpt,img)
 		ctrpt = 1,0
 		self.wall_t = sprites.Object(ctrpt,img)
@@ -422,31 +425,31 @@ class Main:
 			passedDegrees += interval
 			rotation -= interval
 
-	def monsterPatternFire(self, monst):
-
-		monst.firing = False
-		dam,img,degreeNum,speed,angleFactor,speedFactor,interval,switchBackPoints = monst.fire_data
-		img = load_image_trans(img,-1)
-		x,y,width,height = monst.rect
-		x += (width / 2)
-		y += (height / 2)
-		ctrpt = x,y
-		degrees = 0
-		oldDegrees = 0
-		passedDegrees = switchBackPoints[0]
-		rotation = -90 + switchBackPoints[0]
-		while degrees < degreeNum:
-			if (degrees - oldDegrees) >= switchBackPoints[1]:
-				passedDegrees = switchBackPoints[0]
-				rotation = -90 + switchBackPoints[0]
-				speed += 2
-				oldDegrees = degrees
-			data = [dam,speed,angleFactor,speedFactor,False]
-			bullet = sprites.Bullet(ctrpt,img,passedDegrees,data)
-			self.monster_bullet_group.add(bullet)
-			degrees += interval
-			passedDegrees += interval
-			rotation -= interval
+	# def monsterPatternFire(self, monst):
+	#
+	# 	monst.firing = False
+	# 	dam,img,degreeNum,speed,angleFactor,speedFactor,interval,switchBackPoints = monst.fire_data
+	# 	img = load_image_trans(img,-1)
+	# 	x,y,width,height = monst.rect
+	# 	x += (width / 2)
+	# 	y += (height / 2)
+	# 	ctrpt = x,y
+	# 	degrees = 0
+	# 	oldDegrees = 0
+	# 	passedDegrees = switchBackPoints[0]
+	# 	rotation = -90 + switchBackPoints[0]
+	# 	while degrees < degreeNum:
+	# 		if (degrees - oldDegrees) >= switchBackPoints[1]:
+	# 			passedDegrees = switchBackPoints[0]
+	# 			rotation = -90 + switchBackPoints[0]
+	# 			speed += 2
+	# 			oldDegrees = degrees
+	# 		data = [dam,speed,angleFactor,speedFactor,False]
+	# 		bullet = sprites.Bullet(ctrpt,img,passedDegrees,data)
+	# 		self.monster_bullet_group.add(bullet)
+	# 		degrees += interval
+	# 		passedDegrees += interval
+	# 		rotation -= interval
 
 	def monsterFire(self, monst):
 
@@ -455,7 +458,13 @@ class Main:
 			angleFactor = (random.randint(angleFactor[0],angleFactor[1]) / 10)
 		else:
 			angleFactor = angleFactor[0]
-		degree = monst.firing_degree_passed
+
+		# 朝着角色发射
+		if random.randint(1, 100) < 50:
+			toplayer_dgree = atan2(self.hitbox.rect[1] - monst.rect[1], self.hitbox.rect[0] - monst.rect[0])
+			degree = toplayer_dgree * 180 / pi + random.randint(-5, 5)
+		else:
+			degree = monst.firing_degree_passed
 		img = load_image_trans(img,-1)
 		rotation = (degree * -1)
 		img = pygame.transform.rotate(img, rotation)
@@ -505,7 +514,8 @@ class Main:
 	def inGameUpdate(self):
 		self.reward_given = reward_in_env
 		self.rounds_passed += 1
-		self.spawnMonster()
+		if len(self.monster_group.sprites()) < 10:
+			self.spawnMonster()
 
 		if self.respawn_counter >= self.respawn_now and self.lives > 0 and self.delaying_respawn == True:
 			#Still have the issue of drifting on respawn, causing the player to have high movespeed and
@@ -583,23 +593,23 @@ class Main:
 
 		if self.hitbox.health < 0:
 			self.death = True
-			self.alive = False
-			self.hitbox.MoveKeyUp(276-self.prev_key)
-			self.hitbox.health = 0
-			self.lives -= 1
-			self.hitbox.firing = False
-			self.delaying_respawn = True
-			self.hitbox.charge = 0
-			self.moveable = False
-			self.playerImg.kill()
-			self.hitbox.rect.move_ip(100000,100000)
-			self.hitbox.kill()
+			# self.alive = False
+			# self.hitbox.MoveKeyUp(276-self.prev_key)
+			self.hitbox.health = 5
+			# self.lives -= 1
+			# self.hitbox.firing = False
+			# self.delaying_respawn = True
+			# self.hitbox.charge = 0
+			# self.moveable = False
+			# self.playerImg.kill()
+			# self.hitbox.rect.move_ip(100000,100000)
+			# self.hitbox.kill()
 
 
 
 		self.xMove,self.yMove = self.hitbox.xMove,self.hitbox.yMove
 		self.hitbox.moveable = self.moveable
-		self.hitbox.update(self.wall_vertical_group,self.wall_horizontal_group,self.monster_bullet_group)
+		self.hitbox.update(self.width,self.height,self.monster_bullet_group)
 		self.playerImg.update(self.hitbox.xPub,self.hitbox.yPub)
 		target = self.getTarget()
 		self.player_bullet_group.update(target)
@@ -609,88 +619,127 @@ class Main:
 
 		self.inGameDraw()
 
-	def MainLoop(self, action):
-		pygame.time.wait(self.ms_per_round)
-		performed_action = 0
-		previous_action = 0
-		if action == 0:
-			performed_action = K_LEFT
+	def MainLoop(self, action, if_wait=False):
+		if if_wait:
+			pygame.time.wait(self.ms_per_round)
+
+		if self.inMenu == True:
+			self.inMenu = False
+			# self.screen.fill((0,0,0))
+			if self.current_menu[self.current_selection][4] != None:
+				self.current_menu[self.current_selection][3](self.current_menu[self.current_selection][4])
+				self.current_selection = 1
+			else:
+				self.current_menu[self.current_selection][3]()
+				self.current_selection = 1
+		# performed_action = 0
+		# previous_action = 0
+		# if action == 0:
+		# 	performed_action = K_LEFT
+		# elif action == 1:
+		# 	performed_action = K_RIGHT
+		# elif action == 2:
+		# 	performed_action = K_DOWN
+		# elif action == 3:
+		# 	performed_action = K_UP
+		# else:
+		# 	performed_action = K_x
+		#
+		# if self.prev_key == 0:
+		# 	previous_action = K_LEFT
+		# elif self.prev_key == 1:
+		# 	previous_action = K_RIGHT
+		# elif self.prev_key == 2:
+		# 	previous_action = K_DOWN
+		# elif self.prev_key == 3:
+		# 	previous_action = K_UP
+		# else:
+		# 	previous_action = K_x
+
+		# if self.alive:
+		# 	pygame.event.post(pygame.event.Event(KEYDOWN, key=K_x))
+		# 	if self.prev_key != action:
+		# 		pygame.event.post(pygame.event.Event(KEYUP, key=previous_action))
+		# 		pygame.event.post(pygame.event.Event(KEYDOWN, key=performed_action))
+
+		# self.prev_key = action
+		#
+		#
+		# pygame.event.pump()
+
+		# 五种举动
+		if action == 100:
+			self.hitbox.MoveKeyDown(K_SPACE)
+			# self.hitbox.MoveKeyUp(K_SPACE)
+		elif action == 0:
+			self.hitbox.MoveKeyDown(K_UP)
+			#self.hitbox.MoveKeyUp(K_UP)
 		elif action == 1:
-			performed_action = K_RIGHT
+			self.hitbox.MoveKeyDown(K_DOWN)
+			#self.hitbox.MoveKeyUp(K_DOWN)
+		elif action == 2:
+			self.hitbox.MoveKeyDown(K_LEFT)
+			#self.hitbox.MoveKeyUp(K_LEFT)
+		elif action == 3:
+			self.hitbox.MoveKeyDown(K_RIGHT)
+			#self.hitbox.MoveKeyUp(K_RIGHT)
 		else:
-			performed_action = K_x
+			pass
 
-		if self.prev_key == 0:
-			previous_action = K_LEFT
-		elif self.prev_key == 1:
-			previous_action = K_RIGHT
-		else:
-			previous_action = K_x
-		if self.alive:
-			pygame.event.post(pygame.event.Event(KEYDOWN, key=K_x))
-			if self.prev_key != action:
-				pygame.event.post(pygame.event.Event(KEYUP, key=previous_action))
-				pygame.event.post(pygame.event.Event(KEYDOWN, key=performed_action))
-
-		self.prev_key = action
-
-
-		pygame.event.pump()
-
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				sys.exit()
-			elif event.type == KEYDOWN:
-				if ((event.key == K_RIGHT)
-					or (event.key == K_LEFT)
-					or (event.key == K_UP)
-					or (event.key == K_DOWN)):
-					self.hitbox.MoveKeyDown(event.key)
-				if event.key == K_x:
-					if self.hitbox.stamina_out == False:
-						self.hitbox.firing = True
-				if event.key == K_z:
-					if self.hitbox.charge == self.hitbox.charge_max:
-						self.playerPatternFire()
-				if event.key == K_c:
-					self.shield()
-				if event.key == K_p:
-					if self.paused == True:
-						self.paused = False
-						self.playing = True
-						self.moveable = True
-					else:
-						self.paused = True
-						self.playing = False
-						self.moveable = False
-				if self.inMenu == True:
-					if event.key == K_UP:
-						self.current_selection -= 1
-						if self.current_selection < 1:
-							self.current_selection = 1
-						self.menu(self.current_menu)
-					elif event.key == K_DOWN:
-						self.current_selection += 1
-						if self.current_selection > self.num_choices:
-							self.current_selection = self.num_choices
-						self.menu(self.current_menu)
-					elif event.key == K_x:
-						self.inMenu = False
-						self.screen.fill((0,0,0))
-						if self.current_menu[self.current_selection][4] != None:
-							self.current_menu[self.current_selection][3](self.current_menu[self.current_selection][4])
-							self.current_selection = 1
-						else:
-							self.current_menu[self.current_selection][3]()
-							self.current_selection = 1
-			elif event.type == KEYUP:
-				if ((event.key == K_RIGHT)
-					or (event.key == K_LEFT)
-					or (event.key == K_UP)
-					or (event.key == K_DOWN)):
-					self.hitbox.MoveKeyUp(event.key)
-				if event.key == K_x:
-					self.hitbox.firing = False
+		# for event in pygame.event.get():
+		# 	if event.type == pygame.QUIT:
+		# 		sys.exit()
+		# 	elif event.type == KEYDOWN:
+		# 		if ((event.key == K_RIGHT)
+		# 			or (event.key == K_LEFT)
+		# 			or (event.key == K_UP)
+		# 			or (event.key == K_DOWN)):
+		# 			self.hitbox.MoveKeyDown(event.key)
+		# 		if event.key == K_x:
+		# 			if self.hitbox.stamina_out == False:
+		# 				self.hitbox.firing = True
+		# 		if event.key == K_z:
+		# 			if self.hitbox.charge == self.hitbox.charge_max:
+		# 				self.playerPatternFire()
+		# 		if event.key == K_c:
+		# 			self.shield()
+		# 		if event.key == K_p:
+		# 			if self.paused == True:
+		# 				self.paused = False
+		# 				self.playing = True
+		# 				self.moveable = True
+		# 			else:
+		# 				self.paused = True
+		# 				self.playing = False
+		# 				self.moveable = False
+		# 		if self.inMenu == True:
+		# 			if event.key == K_UP:
+		# 				self.current_selection -= 1
+		# 				if self.current_selection < 1:
+		# 					self.current_selection = 1
+		# 				self.menu(self.current_menu)
+		# 			elif event.key == K_DOWN:
+		# 				self.current_selection += 1
+		# 				if self.current_selection > self.num_choices:
+		# 					self.current_selection = self.num_choices
+		# 				self.menu(self.current_menu)
+		# 			elif event.key == K_x:
+		# 				self.inMenu = False
+		# 				self.screen.fill((0,0,0))
+		# 				if self.current_menu[self.current_selection][4] != None:
+		# 					self.current_menu[self.current_selection][3](self.current_menu[self.current_selection][4])
+		# 					self.current_selection = 1
+		# 				else:
+		# 					self.current_menu[self.current_selection][3]()
+		# 					self.current_selection = 1
+		# 	elif event.type == KEYUP:
+		# 		if ((event.key == K_RIGHT)
+		# 			or (event.key == K_LEFT)
+		# 			or (event.key == K_UP)
+		# 			or (event.key == K_DOWN)):
+		# 			self.hitbox.MoveKeyUp(event.key)
+		# 		if event.key == K_x:
+		# 			self.hitbox.firing = False
 
 		if self.inMenu == True:
 			self.moveable = False
@@ -699,13 +748,27 @@ class Main:
 		if self.playing == True:
 			self.inMenu = False
 			self.inGameUpdate()
-		image_data = pygame.surfarray.array3d(pygame.display.get_surface())
-		reward = death_reward if self.death else self.reward_given
+
+		game_data = GameData()
+		game_data.bullets = self.monster_bullet_group
+		game_data.player_point = self.player_group.sprites()[0].rect.center
+		# image_data = pygame.surfarray.array3d(pygame.display.get_surface())
+		# reward = death_reward if self.death else self.reward_given
+		reward = death_reward if self.death else reward_in_env / 2 * (self.hitbox.rect[1] / self.height) + \
+                                                 reward_in_env / 2 * (1 - abs(self.hitbox.rect[0] - self.width / 2) / (self.width / 2) )
+        # reward = death_reward if self.death else 0.5*(1 - abs(self.hitbox.rect[0] - self.width / 2) / (self.width / 2) ) + 0.5*(1 - abs(self.hitbox.rect[1] - self.height / 2) / (self.height / 2) )
 		#if self.death:
 		#	 reward = -10
 		self.score_prev = self.score
-		return reward, image_data, self.death
+
+		if_dead = self.death
+		if self.death:
+			self.death = False
+
+
+		return reward, game_data, if_dead
 
 if __name__ == "__main__":
 	MainWindow = Main()
-	MainWindow.MainLoop(3)
+	while True:
+		MainWindow.MainLoop(0)
